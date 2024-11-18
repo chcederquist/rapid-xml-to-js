@@ -1,5 +1,5 @@
 import { parse } from "./index";
-
+// TODO: Benchmark tests
 describe('Test of quickXmlParse', () => {
   it('Correctly parses an XML structure', () => {
     const xml = `<root><a></a><b></b></root>`

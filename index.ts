@@ -102,7 +102,7 @@ export function parse(xml: string) {
       }
       let contentTo = i;
       i--
-      curContent = [contentFrom, contentTo]
+      curContent = [contentFrom, contentTo] // TODO: Trim spaces
     }
   }
   return o;
