@@ -15,7 +15,6 @@ This library is built for performance and simplicity. Below is a summary of what
 ### ❌ Limitations
 - Does not set attributes on elements. (To be implemented)
 - Does not handle mixed content (text between and around child elements). (To be implemented)
-- Does not handle multiple CDATA or mixed text and CDATA (To be implemented)
 - Does not validate XML (assumes input is well-formed).
 - Does not support namespaces or advanced XML features.
 

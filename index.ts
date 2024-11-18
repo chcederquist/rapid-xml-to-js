@@ -2,7 +2,7 @@ export function xmlToJson(xml: string) {
   const o: any = {};
   let cur = o;
   let curName = ''
-  let curContent: [number,number] = [-1,-1];
+  let curContentList: [number,number][] = [];
   let hasContent = false;
   for (let i = 0; i < xml.length; i++) {
     let curChar = xml[i];
@@ -12,9 +12,17 @@ export function xmlToJson(xml: string) {
         if (hasContent) { // Insert content instead of current object
           if (cur[curName] instanceof Array) {
             const lastIdx = cur[curName].length-1;
-            cur[curName][lastIdx] = xml.slice(curContent[0], curContent[1]);
+            cur[curName][lastIdx] = '';
+            for (let i = 0; i < curContentList.length; i++) {
+              let curContent = curContentList[i];
+              cur[curName][lastIdx] += xml.slice(curContent[0], curContent[1]);
+            }
           } else {
-            cur[curName] = xml.slice(curContent[0], curContent[1]);
+            cur[curName] = '';
+            for (let i = 0; i < curContentList.length; i++) {
+              let curContent = curContentList[i];
+              cur[curName] += xml.slice(curContent[0], curContent[1]);
+            }
           }
         }
         while(xml[i] !== '>') {
@@ -43,7 +51,7 @@ export function xmlToJson(xml: string) {
               i++;
             }
             let contentTo = i;
-            curContent = [contentFrom, contentTo];
+            curContentList.push([contentFrom, contentTo]);
             i+=2;
             hasContent = true;
             continue; // Skip hasContent = false 
@@ -92,6 +100,7 @@ export function xmlToJson(xml: string) {
         }
       }
       hasContent = false;
+      curContentList = [];
     } else if (curName) { // Inside curName
       let contentFrom = i; // TODO: Handle mixed content
       while(xml[i] !== '<') {
@@ -102,7 +111,7 @@ export function xmlToJson(xml: string) {
       }
       let contentTo = i;
       i--
-      curContent = [contentFrom, contentTo] // TODO: Trim spaces
+      curContentList.push([contentFrom, contentTo]) // TODO: Trim spaces
     }
   }
   return o;

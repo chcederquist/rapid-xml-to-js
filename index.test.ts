@@ -321,22 +321,40 @@ describe('Test of parse', () => {
     expect(xmlToJson(xml)).toEqual(expected);
   });
 
-  // test('handles multiple levels of CDATA', () => {
-  //   const xml = `
-  //     <root>
-  //       <data><![CDATA[Level 1]]><![CDATA[ and Level 2]]></data>
-  //     </root>
-  //   `;
+  test('handles multiple levels of CDATA', () => {
+    const xml = `
+      <root>
+        <data><![CDATA[Level 1]]><![CDATA[ and Level 2]]></data>
+      </root>
+    `;
 
-  //   const expected = {
-  //     root: {
-  //       __parent: expect.any(Object),
-  //       data: 'Level 1 and Level 2',
-  //     },
-  //   };
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        data: 'Level 1 and Level 2',
+      },
+    };
+    const actual = xmlToJson(xml);
+    expect(actual).toEqual(expected);
+  });
 
-  //   expect(parse(xml)).toEqual(expected);
-  // });
+  test('handles mixed test and CDATA', () => {
+    const xml = `
+      <root>
+        <data>Test <![CDATA[Level 1]]>here<![CDATA[ and Level 2]]>there</data>
+      </root>
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        data: 'Test Level 1here and Level 2there',
+      },
+    };
+    const actual = xmlToJson(xml);
+    expect(actual).toEqual(expected);
+  });
+
 
   test('ignores extraneous characters outside root element', () => {
     const xml = `
