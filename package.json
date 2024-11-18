@@ -1,0 +1,42 @@
+{
+  "name": "quick-xml-parser",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Blazing fast XML-parser for parsing simple XML structures into JSON. Optimised for speed, low memory usage and avoiding garbage collection.",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js", 
+      "require": "./dist/index.cjs.js"
+    }
+  },
+  "scripts": {
+    "test": "jest",
+    "build": "rollup -c && tsc --emitDeclarationOnly --declaration"
+  },
+  "keywords": [
+    "xml2json",
+    "xml-to-json",
+    "xml",
+    "xml-parser",
+    "xml",
+    "parser",
+    "simple-xml-parser",
+    "xml-to-js",
+    "xml2js"
+  ],
+  "author": "Christian Pilegaard Cederquist",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "rollup": "^4.25.0",
+    "ts-jest": "^29.2.5",
+    "tslib": "^2.8.1",
+    "typescript": "^5.6.3"
+  }
+}
