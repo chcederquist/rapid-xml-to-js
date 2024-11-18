@@ -13,7 +13,7 @@ export default {
     {
       file: "dist/index.esm.min.js",
       format: "esm",
-      name: "weeknumber-iso8601",
+      name: "rapid-xml-to-json",
       plugins: [terser()],
     },
   ],

@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "ESNext"
+    "outDir": "dist"
   },
   "files": [
     "index.ts"

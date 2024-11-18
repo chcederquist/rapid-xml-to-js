@@ -12,6 +12,10 @@
       "require": "./dist/index.cjs.js"
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chce/rapid-xml-to-json"
+  },
   "scripts": {
     "test": "jest",
     "build": "rollup -c && tsc --emitDeclarationOnly --declaration"
