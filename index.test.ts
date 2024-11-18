@@ -1,6 +1,6 @@
 import { parse } from "./index";
 // TODO: Benchmark tests
-describe('Test of quickXmlParse', () => {
+describe('Test of parse', () => {
   it('Correctly parses an XML structure', () => {
     const xml = `<root><a></a><b></b></root>`
     const json = parse(xml);
@@ -182,5 +182,218 @@ describe('Test of quickXmlParse', () => {
     };
 
     expect(parse(xml)).toEqual(expected);
+  });
+
+  test('handles multiple sibling elements with the same name', () => {
+    const xml = `
+      <root>
+        <item>First</item>
+        <item>Second</item>
+        <item>Third</item>
+      </root>
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        item: ['First', 'Second', 'Third'],
+      },
+    };
+
+    expect(parse(xml)).toEqual(expected);
+  });
+
+  test('handles deeply nested structures with mixed empty and populated elements', () => {
+    const xml = `
+      <root>
+        <level1>
+          <level2>
+            <level3>
+              <empty />
+              <populated>Content</populated>
+            </level3>
+          </level2>
+        </level1>
+      </root>
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        level1: {
+          __parent: expect.any(Object),
+          level2: {
+            __parent: expect.any(Object),
+            level3: {
+              __parent: expect.any(Object),
+              empty: {__parent: expect.any(Object)},
+              populated: 'Content',
+            },
+          },
+        },
+      },
+    };
+
+    expect(parse(xml)).toEqual(expected);
+  });
+
+  test('handles XML with no content inside tags', () => {
+    const xml = `
+      <root>
+        <empty1></empty1>
+        <empty2 />
+      </root>
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        empty1: {__parent: expect.any(Object)},
+        empty2: {__parent: expect.any(Object)},
+      },
+    };
+    const actual = parse(xml)
+    expect(actual).toEqual(expected);
+  });
+
+  test('parses CDATA with special characters', () => {
+    const xml = `
+      <root>
+        <data><![CDATA[<special>&characters</special>]]></data>
+      </root>
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        data: '<special>&characters</special>',
+      },
+    };
+
+    expect(parse(xml)).toEqual(expected);
+  });
+
+  test('handles documents with leading and trailing whitespace', () => {
+    const xml = `
+      
+      <root>
+        <item>Content</item>
+      </root>
+      
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        item: 'Content',
+      },
+    };
+
+    expect(parse(xml)).toEqual(expected);
+  });
+
+  test('handles empty root element', () => {
+    const xml = `
+      <root></root>
+    `;
+
+    const expected = {
+      root: {__parent: expect.any(Object)},
+    };
+
+    expect(parse(xml)).toEqual(expected);
+  });
+
+  test('handles large documents', () => {
+    const xml = `
+      <root>
+        ${'<item>Content</item>'.repeat(10000)}
+      </root>
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        item: Array(10000).fill('Content'),
+      },
+    };
+
+    expect(parse(xml)).toEqual(expected);
+  });
+
+  // test('handles multiple levels of CDATA', () => {
+  //   const xml = `
+  //     <root>
+  //       <data><![CDATA[Level 1]]><![CDATA[ and Level 2]]></data>
+  //     </root>
+  //   `;
+
+  //   const expected = {
+  //     root: {
+  //       __parent: expect.any(Object),
+  //       data: 'Level 1 and Level 2',
+  //     },
+  //   };
+
+  //   expect(parse(xml)).toEqual(expected);
+  // });
+
+  test('ignores extraneous characters outside root element', () => {
+    const xml = `
+      <!-- Comment -->
+      <root>
+        <item>Valid content</item>
+      </root>
+      <!-- Another comment -->
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        item: 'Valid content',
+      },
+    };
+
+    expect(parse(xml)).toEqual(expected);
+  });
+
+
+  test('handles XML with unconventional spacing and line breaks', () => {
+    const xml = `
+      <root> 
+        <item 
+          >Content</item 
+        >
+        <item>Another</item  >
+      </root>
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        item: ['Content', 'Another'],
+      },
+    };
+
+    expect(parse(xml)).toEqual(expected);
+  });
+
+  test('ignores invalid comments and CDATA-like content outside valid constructs', () => {
+    const xml = `
+      <root>
+        <item>Valid content</item>
+        <!-- This is not <![CDATA[valid]] -->
+        <!-- This is also not valid CDATA ]]> -->
+      </root>
+    `;
+
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        item: 'Valid content',
+      },
+    };
+    const actual = parse(xml)
+    expect(actual).toEqual(expected);
   });
 });

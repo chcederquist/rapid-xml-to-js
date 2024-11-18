@@ -1,6 +1,6 @@
-# QuickXMLParse
+# quick-xml-parser
 
-**QuickXMLParse** is a blazing-fast, lightweight XML parser designed for simple hierarchical XML data. By focusing on core functionality and avoiding unnecessary overhead, it outperforms existing libraries like `fast-xml-parser` in terms of speed and memory efficiency.
+**quick-xml-parser** is a blazing-fast, lightweight XML parser designed for simple hierarchical XML data.
 
 ## Features
 
@@ -13,22 +13,23 @@ This library is built for performance and simplicity. Below is a summary of what
 - Skips comments, processing instructions (`<?...?>`), and `<!DOCTYPE>` declarations.
 
 ### ❌ Limitations
-- Does not parse attributes. (To be implemented)
+- Does not return attributes. (To be implemented)
 - Does not handle mixed content (text between and around child elements). (To be implemented)
-- Does not validate XML (assumes input is well-formed). (Will not be implemented)
-- Does not support namespaces or advanced XML features. (Will not be implemented)
+- Does not handle multiple CDATA or mixed text and CDATA (To be implemented)
+- Does not validate XML (assumes input is well-formed).
+- Does not support namespaces or advanced XML features.
 
 ## Installation
 
 You can install the library via npm:
 
 ```bash
-npm install quick-xml-parse
+npm install quick-xml-parser
 ```
 
 ## Usage
 
-Here’s how you can use **QuickXMLParse**:
+Here’s how you can use **quick-xml-parser**:
 
 ```typescript
 import { parse } from 'quick-xml-parser';
@@ -60,11 +61,11 @@ console.log(parsed);
 
 ## Performance
 
-QuickXMLParse is optimized for speed and low memory usage. It avoids garbage collection by slicing strings directly from the input XML. In benchmarks, it outperforms `fast-xml-parser` for its supported functionality.
+quick-xml-parser is optimized for speed and low memory usage, skipping some XML features to avoid overhead.
 
 ## API
 
-### `quickXmlParse(xml: string): object`
+### `parse(xml: string): object`
 
 Parses a well-formed XML string into a JavaScript object.
 
