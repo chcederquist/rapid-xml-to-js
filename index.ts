@@ -10,7 +10,12 @@ export function parse(xml: string) {
       if (xml[i+1] === '/') { // Inside a closing tag
         cur = cur.__parent;
         if (hasContent) { // Insert content instead of current object
-          cur[curName] = xml.slice(curContent[0], curContent[1]);
+          if (cur[curName] instanceof Array) {
+            const lastIdx = cur[curName].length-1;
+            cur[curName][lastIdx] = xml.slice(curContent[0], curContent[1]);
+          } else {
+            cur[curName] = xml.slice(curContent[0], curContent[1]);
+          }
         }
         while(xml[i] !== '>') {
           i++;
@@ -90,7 +95,7 @@ export function parse(xml: string) {
     } else if (curName) { // Inside curName
       let contentFrom = i; // TODO: Handle mixed content
       while(xml[i] !== '<') {
-        if(!hasContent && (xml[i] !== ' ' || xml[i] !== '\n')) {
+        if(!hasContent && (xml[i] !== ' ' && xml[i] !== '\n')) {
           hasContent = true;
         }
         i++

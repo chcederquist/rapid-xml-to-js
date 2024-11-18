@@ -1,4 +1,3 @@
-```markdown
 # QuickXMLParse
 
 **QuickXMLParse** is a blazing-fast, lightweight XML parser designed for simple hierarchical XML data. By focusing on core functionality and avoiding unnecessary overhead, it outperforms existing libraries like `fast-xml-parser` in terms of speed and memory efficiency.
@@ -86,4 +85,3 @@ Contributions are welcome! If you encounter any issues or have suggestions for i
 ## License
 
 This library is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more information.
-```
