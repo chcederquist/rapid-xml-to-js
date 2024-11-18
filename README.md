@@ -1,7 +1,3 @@
-Here’s a polished `README.md` for your XML parser library:
-
----
-
 ```markdown
 # QuickXMLParse
 
