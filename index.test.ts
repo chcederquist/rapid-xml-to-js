@@ -1,9 +1,9 @@
-import { parse } from "./index";
+import { xmlToJson } from "./index";
 // TODO: Benchmark tests
 describe('Test of parse', () => {
   it('Correctly parses an XML structure', () => {
     const xml = `<root><a></a><b></b></root>`
-    const json = parse(xml);
+    const json = xmlToJson(xml);
     expect(json.root).toHaveProperty('a');
     expect(json.root).toHaveProperty('b');
   });
@@ -11,14 +11,14 @@ describe('Test of parse', () => {
   it('Correctly parses CDATA', () => {
     const aData = '<Data from CDATA>'
     const xml = `<root><a><![CDATA[${aData}]]></a><b>Test</b>`
-    const json = parse(xml);
+    const json = xmlToJson(xml);
     expect(json.root.a).toBe("<Data from CDATA>");
     expect(json.root.b).toBe("Test");
   });
 
   it('Correctly ignores comments, DOCTYPE, stylesheets', () => {
     const xml = `<root><a><!--Test comment--><c></c></a><b></b></root>`
-    const json = parse(xml);
+    const json = xmlToJson(xml);
     expect(json.root).toHaveProperty('a');
     expect(json.root).toHaveProperty('b');
     expect(json.root.a).toHaveProperty('c');
@@ -26,7 +26,7 @@ describe('Test of parse', () => {
 
   it('Correctly parses lists of elements', () => {
     const xml = `<root><a></a><a></a><a/><b></b></root>`
-    const json = parse(xml);
+    const json = xmlToJson(xml);
     expect(json.root).toHaveProperty('b');
     expect(json.root.a.length).toBe(3);
   });
@@ -60,7 +60,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('handles CDATA-heavy XML', () => {
@@ -83,7 +83,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('parses XML with variations in whitespace formatting', () => {
@@ -112,7 +112,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('handles empty tags and self-closing tags', () => {
@@ -137,7 +137,7 @@ describe('Test of parse', () => {
         },
       },
     };
-    const actual = parse(xml)
+    const actual = xmlToJson(xml)
     expect(actual).toEqual(expected);
   });
 
@@ -158,7 +158,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('handles mixed CDATA and regular content in a single document', () => {
@@ -181,7 +181,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('handles multiple sibling elements with the same name', () => {
@@ -200,7 +200,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('handles deeply nested structures with mixed empty and populated elements', () => {
@@ -234,7 +234,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('handles XML with no content inside tags', () => {
@@ -252,7 +252,7 @@ describe('Test of parse', () => {
         empty2: {__parent: expect.any(Object)},
       },
     };
-    const actual = parse(xml)
+    const actual = xmlToJson(xml)
     expect(actual).toEqual(expected);
   });
 
@@ -270,7 +270,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('handles documents with leading and trailing whitespace', () => {
@@ -289,7 +289,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('handles empty root element', () => {
@@ -301,7 +301,7 @@ describe('Test of parse', () => {
       root: {__parent: expect.any(Object)},
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('handles large documents', () => {
@@ -318,7 +318,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   // test('handles multiple levels of CDATA', () => {
@@ -354,7 +354,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
 
@@ -375,7 +375,7 @@ describe('Test of parse', () => {
       },
     };
 
-    expect(parse(xml)).toEqual(expected);
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 
   test('ignores invalid comments and CDATA-like content outside valid constructs', () => {
@@ -393,7 +393,7 @@ describe('Test of parse', () => {
         item: 'Valid content',
       },
     };
-    const actual = parse(xml)
+    const actual = xmlToJson(xml)
     expect(actual).toEqual(expected);
   });
 });

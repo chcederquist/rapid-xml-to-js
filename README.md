@@ -1,6 +1,6 @@
-# quick-xml-parser
+# rapid-xml-to-json
 
-**quick-xml-parser** is a blazing-fast, lightweight XML parser designed for simple hierarchical XML data.
+**rapid-xml-to-json** is a blazing-fast, lightweight XML parser designed for simple hierarchical XML data.
 
 ## Features
 
@@ -13,7 +13,7 @@ This library is built for performance and simplicity. Below is a summary of what
 - Skips comments, processing instructions (`<?...?>`), and `<!DOCTYPE>` declarations.
 
 ### ❌ Limitations
-- Does not return attributes. (To be implemented)
+- Does not set attributes on elements. (To be implemented)
 - Does not handle mixed content (text between and around child elements). (To be implemented)
 - Does not handle multiple CDATA or mixed text and CDATA (To be implemented)
 - Does not validate XML (assumes input is well-formed).
@@ -24,15 +24,15 @@ This library is built for performance and simplicity. Below is a summary of what
 You can install the library via npm:
 
 ```bash
-npm install quick-xml-parser
+npm install rapid-xml-to-json
 ```
 
 ## Usage
 
-Here’s how you can use **quick-xml-parser**:
+Here’s how you can use **rapid-xml-to-json**:
 
 ```typescript
-import { parse } from 'quick-xml-parser';
+import { parse } from 'rapid-xml-to-json';
 
 const xml = `
 <root>
@@ -61,7 +61,7 @@ console.log(parsed);
 
 ## Performance
 
-quick-xml-parser is optimized for speed and low memory usage, skipping some XML features to avoid overhead.
+rapid-xml-to-json is optimized for speed and low memory usage, skipping some XML features to avoid overhead.
 
 ## API
 

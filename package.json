@@ -1,8 +1,8 @@
 {
-  "name": "quick-xml-parser",
+  "name": "rapid-xml-to-json",
   "version": "0.0.1",
   "type": "module",
-  "description": "Blazing fast XML-parser for parsing simple XML structures into JSON. Optimised for speed, low memory usage and avoiding garbage collection.",
+  "description": "Blazing fast, dependency-free XML-parser for parsing XML structures into JSON. Optimised for speed and low memory usage.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
