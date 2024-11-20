@@ -12,16 +12,17 @@ export function xmlToJson(xml: string) {
         if (hasContent) { // Insert content instead of current object
           if (cur[curName] instanceof Array) {
             const lastIdx = cur[curName].length-1;
-            cur[curName][lastIdx] = '';
+
+            cur[curName][lastIdx]['#text'] = ''
             for (let i = 0; i < curContentList.length; i++) {
               let curContent = curContentList[i];
-              cur[curName][lastIdx] += xml.slice(curContent[0], curContent[1]);
+              cur[curName][lastIdx]['#text'] += xml.slice(curContent[0], curContent[1]);
             }
           } else {
-            cur[curName] = '';
+            cur[curName]['#text'] = '';            
             for (let i = 0; i < curContentList.length; i++) {
               let curContent = curContentList[i];
-              cur[curName] += xml.slice(curContent[0], curContent[1]);
+              cur[curName]['#text'] += xml.slice(curContent[0], curContent[1]);
             }
           }
         }
@@ -72,8 +73,23 @@ export function xmlToJson(xml: string) {
           i++
         }
         let isSelfClosing = false;
+        let attrs: [number,number,number,number][] = []
         while(xml[i] !== '>') { // Go until closing tag
           i++;
+          if (xml[i] !== ' ' && xml[i] !== '\n' && xml[i] !== '>' && xml[i] !== '/') {
+            const attrNameStart = i;
+            let attrNameEnd = -1;
+            while(xml[i] !== '=') {
+              i++;
+            }
+            attrNameEnd = i;
+            i+=2; // Skip ="
+            let attrValueStart = i;
+            while(xml[i] !== '"' || xml[i-1] === '\\') {
+              i++
+            }
+            attrs.push([attrNameStart, attrNameEnd, attrValueStart, i]);
+          }
         }
         if (xml[i-1] === '/') {
           isSelfClosing = true;
@@ -96,6 +112,18 @@ export function xmlToJson(xml: string) {
           if (!isSelfClosing) {
             cur = cur[name];
             curName = name;
+          }
+        }
+        if (attrs.length) {
+          if (isSelfClosing) { // If it's self-closing with attributes, hop down into it
+            cur = cur[name];
+          }
+          cur['$attrs'] = {}
+          for (let i = 0; i < attrs.length; i++) {
+            cur['$attrs'][xml.slice(attrs[i][0], attrs[i][1])] = xml.slice(attrs[i][2], attrs[i][3]);
+          }
+          if (isSelfClosing) { // And hop back up
+            cur = cur.__parent;
           }
         }
       }

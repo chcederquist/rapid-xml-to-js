@@ -9,11 +9,11 @@ This library is built for performance and simplicity. Below is a summary of what
 ### ✅ Features
 - Parses well-formed XML into a nested JavaScript object.
 - Handles basic XML structures with child elements.
+- Sets attributes on elements ($attrs)
 - Supports CDATA sections.
 - Skips comments, processing instructions (`<?...?>`), and `<!DOCTYPE>` declarations.
 
 ### ❌ Limitations
-- Does not set attributes on elements. (To be implemented)
 - Does not handle mixed content (text between and around child elements). (To be implemented)
 - Does not validate XML (assumes input is well-formed).
 - Does not support namespaces or advanced XML features.
@@ -31,7 +31,7 @@ npm install rapid-xml-to-json
 Here’s how you can use **rapid-xml-to-json**:
 
 ```typescript
-import { parse } from 'rapid-xml-to-json';
+import { xlmToJson } from 'rapid-xml-to-json';
 
 const xml = `
 <root>
@@ -44,7 +44,7 @@ const xml = `
 </root>
 `;
 
-const parsed = parse(xml);
+const parsed = xmlToJson(xml);
 
 console.log(parsed);
 // Output:
@@ -64,7 +64,7 @@ rapid-xml-to-json is optimized for speed and low memory usage, skipping some XML
 
 ## API
 
-### `parse(xml: string): object`
+### `xmlToJson(xml: string): object`
 
 Parses a well-formed XML string into a JavaScript object.
 

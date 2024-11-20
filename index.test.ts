@@ -1,6 +1,59 @@
 import { xmlToJson } from "./index";
 // TODO: Benchmark tests
 describe('Test of parse', () => {
+
+  test('parses a single attribute', () => {
+    const xml = `<root attr="value">Content</root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        $attrs: { attr: "value" },
+        "#text": "Content",
+      },
+    };
+    expect(xmlToJson(xml)).toEqual(expected);
+  });
+
+  test('parses attributes in a self-closing tag', () => {
+    const xml = `<root attr="value"/>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        $attrs: { attr: "value" },
+      },
+    };
+    let actual = xmlToJson(xml)
+    expect(actual).toEqual(expected);
+  });
+
+  test('parses multiple attributes', () => {
+    const xml = `<root attr1="value1" attr2="value2">Content</root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        $attrs: { attr1: "value1", attr2: "value2" },
+        "#text": "Content",
+      },
+    };
+    expect(xmlToJson(xml)).toEqual(expected);
+  });
+
+  test('parses attributes in nested elements', () => {
+    const xml = `<root><child attr="value">Content</child></root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        child: {
+          __parent: expect.any(Object),
+          $attrs: { attr: "value" },
+          "#text": "Content",
+        },
+      },
+    };
+    let actual = xmlToJson(xml)
+    expect(actual).toEqual(expected);
+  });
+
   it('Correctly parses an XML structure', () => {
     const xml = `<root><a></a><b></b></root>`
     const json = xmlToJson(xml);
@@ -12,8 +65,8 @@ describe('Test of parse', () => {
     const aData = '<Data from CDATA>'
     const xml = `<root><a><![CDATA[${aData}]]></a><b>Test</b>`
     const json = xmlToJson(xml);
-    expect(json.root.a).toBe("<Data from CDATA>");
-    expect(json.root.b).toBe("Test");
+    expect(json.root.a).toEqual({__parent: expect.any(Object), '#text': "<Data from CDATA>"});
+    expect(json.root.b).toEqual({__parent: expect.any(Object), '#text': "Test"});
   });
 
   it('Correctly ignores comments, DOCTYPE, stylesheets', () => {
@@ -53,14 +106,14 @@ describe('Test of parse', () => {
             __parent: expect.any(Object),
             level3: {
               __parent: expect.any(Object),
-              level4: 'Deep content',
+              level4: {__parent: expect.any(Object),'#text': 'Deep content'},
             },
           },
         },
       },
     };
-
-    expect(xmlToJson(xml)).toEqual(expected);
+    const actual = xmlToJson(xml)
+    expect(actual).toEqual(expected);
   });
 
   test('handles CDATA-heavy XML', () => {
@@ -76,9 +129,9 @@ describe('Test of parse', () => {
       root: {
         __parent: expect.any(Object),
         data: [
-          'Some CDATA content',
-          '<tag>Inside CDATA</tag>',
-          '',
+          {__parent: expect.any(Object), '#text':'Some CDATA content'},
+          {__parent: expect.any(Object), '#text':'<tag>Inside CDATA</tag>'},
+          {__parent: expect.any(Object), '#text':''},
         ],
       },
     };
@@ -102,11 +155,11 @@ describe('Test of parse', () => {
       root: {
         __parent: expect.any(Object),
         item: [
-          ' Content with leading and trailing spaces ',
-          `
+          {__parent: expect.any(Object), '#text':' Content with leading and trailing spaces '},
+          {__parent: expect.any(Object), '#text':`
           Content with
           line breaks
-        `,
+        `},
           {__parent: expect.any(Object)}
         ],
       },
@@ -154,7 +207,7 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        item: 'Valid content',
+        item: {__parent: expect.any(Object), '#text': 'Valid content'},
       },
     };
 
@@ -174,9 +227,9 @@ describe('Test of parse', () => {
       root: {
         __parent: expect.any(Object),
         data: [
-          'CDATA content',
-          'Regular content',
-          'More CDATA',
+          {__parent: expect.any(Object), '#text': 'CDATA content'},
+          {__parent: expect.any(Object), '#text': 'Regular content'},
+          {__parent: expect.any(Object), '#text': 'More CDATA'},
         ],
       },
     };
@@ -196,7 +249,7 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        item: ['First', 'Second', 'Third'],
+        item: [{__parent: expect.any(Object), '#text':'First'}, {__parent: expect.any(Object), '#text': 'Second'}, {__parent: expect.any(Object), '#text':'Third'}],
       },
     };
 
@@ -227,7 +280,7 @@ describe('Test of parse', () => {
             level3: {
               __parent: expect.any(Object),
               empty: {__parent: expect.any(Object)},
-              populated: 'Content',
+              populated: {__parent: expect.any(Object), '#text': 'Content'},
             },
           },
         },
@@ -266,7 +319,7 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        data: '<special>&characters</special>',
+        data: {__parent: expect.any(Object), '#text': '<special>&characters</special>'},
       },
     };
 
@@ -285,11 +338,11 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        item: 'Content',
+        item: {__parent: expect.any(Object), '#text': 'Content'},
       },
     };
-
-    expect(xmlToJson(xml)).toEqual(expected);
+    const actual = xmlToJson(xml)
+    expect(actual).toEqual(expected);
   });
 
   test('handles empty root element', () => {
@@ -314,7 +367,7 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        item: Array(10000).fill('Content'),
+        item: Array(10000).fill({__parent: expect.any(Object), '#text':'Content'}),
       },
     };
 
@@ -331,7 +384,7 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        data: 'Level 1 and Level 2',
+        data: {__parent: expect.any(Object), '#text': 'Level 1 and Level 2'},
       },
     };
     const actual = xmlToJson(xml);
@@ -348,7 +401,7 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        data: 'Test Level 1here and Level 2there',
+        data: {__parent: expect.any(Object), '#text': 'Test Level 1here and Level 2there'},
       },
     };
     const actual = xmlToJson(xml);
@@ -368,7 +421,7 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        item: 'Valid content',
+        item: {__parent: expect.any(Object), '#text': 'Valid content'},
       },
     };
 
@@ -389,7 +442,7 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        item: ['Content', 'Another'],
+        item: [{__parent: expect.any(Object), '#text': 'Content'}, {__parent: expect.any(Object), '#text':'Another'}],
       },
     };
 
@@ -408,10 +461,100 @@ describe('Test of parse', () => {
     const expected = {
       root: {
         __parent: expect.any(Object),
-        item: 'Valid content',
+        item: {__parent: expect.any(Object), '#text': 'Valid content'},
       },
     };
     const actual = xmlToJson(xml)
     expect(actual).toEqual(expected);
+  });
+  test('parses attributes with special characters', () => {
+    const xml = `<root attr="value with spaces" another-attr="value&chars!">Content</root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        $attrs: { 
+          attr: "value with spaces",
+          "another-attr": "value&chars!",
+        },
+        "#text": "Content",
+      },
+    };
+    expect(xmlToJson(xml)).toEqual(expected);
+  });
+
+  test('parses attributes with empty values', () => {
+    const xml = `<root attr1="" attr2="non-empty">Content</root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        $attrs: { 
+          attr1: "",
+          attr2: "non-empty",
+        },
+        "#text": "Content",
+      },
+    };
+    const actual = xmlToJson(xml)
+    expect(actual).toEqual(expected);
+  });
+
+
+  test('parses element with only attributes and no text content', () => {
+    const xml = `<root attr1="value1" attr2="value2"></root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        $attrs: { 
+          attr1: "value1",
+          attr2: "value2",
+        },
+      },
+    };
+    expect(xmlToJson(xml)).toEqual(expected);
+  });
+
+  test('parses attributes with mixed whitespace formatting', () => {
+    const xml = `<root  attr1="value1"  attr2="  value2  ">Content</root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        $attrs: {
+          attr1: "value1",
+          attr2: "  value2  ", // Preserves the spaces
+        },
+        "#text": "Content",
+      },
+    };
+    expect(xmlToJson(xml)).toEqual(expected);
+  });
+
+  test('parses attributes with quotes inside the value', () => {
+    const xml = `<root attr="value with \\"quotes\\" inside">Content</root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        $attrs: {
+          attr: 'value with \\"quotes\\" inside', // Preserves internal quotes
+        },
+        "#text": "Content",
+      },
+    };
+    const actual = xmlToJson(xml)
+    expect(actual).toEqual(expected);
+  });
+
+  test('parses attributes with multiple equal signs in the value', () => {
+    const xml = `<root attr="value=with=equals">Content</root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+
+        $attrs: {
+          attr: "value=with=equals",
+        },
+        "#text": "Content",
+      },
+    };
+    expect(xmlToJson(xml)).toEqual(expected);
   });
 });
