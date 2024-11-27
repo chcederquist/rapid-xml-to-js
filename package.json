@@ -1,6 +1,6 @@
 {
   "name": "rapid-xml-to-json",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Fast, dependency-free XML-parser for parsing XML structures into JSON. Optimised for speed and low memory usage.",
   "main": "dist/index.cjs.js",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chce/rapid-xml-to-json"
+    "url": "git+https://github.com/chcederquist/rapid-xml-to-json"
   },
   "scripts": {
     "test": "jest",
