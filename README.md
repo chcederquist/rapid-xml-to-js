@@ -1,6 +1,6 @@
 # rapid-xml-to-json
 
-**rapid-xml-to-json** is a blazing-fast, lightweight XML parser designed for simple hierarchical XML data.
+**rapid-xml-to-json** is a fast, lightweight XML parser designed for simple hierarchical XML data.
 
 ## Features
 
