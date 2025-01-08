@@ -116,7 +116,11 @@ export function xmlToJson(xml: string) {
         }
         if (attrs.length) {
           if (isSelfClosing) { // If it's self-closing with attributes, hop down into it
-            cur = cur[name];
+            if (cur[name] instanceof Array) {
+              cur = cur[name][cur[name].length-1];
+            } else {
+              cur = cur[name];
+            }
           }
           cur['$attrs'] = {}
           for (let i = 0; i < attrs.length; i++) {

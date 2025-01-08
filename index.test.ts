@@ -557,4 +557,50 @@ describe('Test of parse', () => {
     };
     expect(xmlToJson(xml)).toEqual(expected);
   });
+
+  test('Handles array of self-closing elements', () => {
+    const xml = `<Stemmer>
+<Parti Id="5891" Bogstav="A" Navn="A. Socialdemokratiet" StemmerAntal="86226" StemmerPct="19"/>
+<Parti Id="5893" Bogstav="B" Navn="B. Radikale Venstre" StemmerAntal="34031" StemmerPct="7.5"/>
+<Parti Id="5895" Bogstav="C" Navn="C. Det Konservative Folkeparti" StemmerAntal="22797" StemmerPct="5"/>
+</Stemmer>`
+    const expected = {
+      Stemmer: {
+        __parent: expect.any(Object),
+        Parti: [
+          {
+            __parent: expect.any(Object),
+            $attrs: {
+              Id: "5891",
+              Bogstav: "A",
+              Navn: "A. Socialdemokratiet",
+              StemmerAntal: "86226",
+              StemmerPct: "19",
+            },
+          },
+          {
+            __parent: expect.any(Object),
+            $attrs: {
+              Id: "5893",
+              Bogstav: "B",
+              Navn: "B. Radikale Venstre",
+              StemmerAntal: "34031",
+              StemmerPct: "7.5",
+            },
+          },
+          {
+            __parent: expect.any(Object),
+            $attrs: {
+              Id: "5895",
+              Bogstav: "C",
+              Navn: "C. Det Konservative Folkeparti",
+              StemmerAntal: "22797",
+              StemmerPct: "5",
+            },
+          },
+        ],
+      }
+    }
+    expect(xmlToJson(xml)).toEqual(expected);
+  })
 });
