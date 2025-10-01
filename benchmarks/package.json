@@ -1,0 +1,29 @@
+{
+  "name": "benchmarks",
+  "version": "1.0.0",
+  "description": "Benchmarks for rapid-xml-to-js",
+  "homepage": "https://github.com/chcederquist/rapid-xml-to-js#readme",
+  "bugs": {
+    "url": "https://github.com/chcederquist/rapid-xml-to-js/issues"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chcederquist/rapid-xml-to-js.git"
+  },
+  "license": "MIT",
+  "author": "Christian Pilegaard Cederquist",
+  "main": "benchmark.js",
+  "scripts": {
+    "parser": "node XmlParser.mjs",
+    "builder": "node XmlBuilder.mjs",
+    "test": "npm run parser"
+  },
+  "dependencies": {
+    "fast-xml-parser": "5.2.5",
+    "txml": "5.1.1",
+    "xml2js": "^0.6.2",
+    "xmlbuilder2": "^3.0.2",
+    "benchmark": "2.1.4"
+  }
+}
