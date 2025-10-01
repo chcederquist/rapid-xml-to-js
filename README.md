@@ -1,6 +1,6 @@
-# rapid-xml-to-json
+# rapid-xml-to-js
 
-**rapid-xml-to-json** is a fast, lightweight XML parser designed for simple hierarchical XML data.
+**rapid-xml-to-js** is a fast, lightweight XML parser designed for simple hierarchical XML data.
 
 ## Features
 
@@ -22,15 +22,15 @@ This library is built for performance and simplicity. Below is a summary of what
 You can install the library via npm:
 
 ```bash
-npm install rapid-xml-to-json
+npm install rapid-xml-to-js
 ```
 
 ## Usage
 
-Here’s how you can use **rapid-xml-to-json**:
+Here’s how you can use **rapid-xml-to-jsn**:
 
 ```typescript
-import { xlmToJson } from 'rapid-xml-to-json';
+import { xlmToJson } from 'rapid-xml-to-js';
 
 const xml = `
 <root>
@@ -59,7 +59,7 @@ console.log(parsed);
 
 ## Performance
 
-rapid-xml-to-json is optimized for speed and low memory usage, skipping some XML features to avoid overhead.
+rapid-xml-to-js is optimized for speed and low memory usage, skipping some XML features to avoid overhead.
 
 ## API
 

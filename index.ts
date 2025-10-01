@@ -1,4 +1,4 @@
-export function xmlToJson(xml: string) {
+export function xmlToJs(xml: string) {
   const o: any = {};
   let cur = o;
   let curName = ''

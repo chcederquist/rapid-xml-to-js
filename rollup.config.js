@@ -13,7 +13,7 @@ export default {
     {
       file: "dist/index.esm.min.js",
       format: "esm",
-      name: "rapid-xml-to-json",
+      name: "rapid-xml-to-js",
       plugins: [terser()],
     },
   ],
