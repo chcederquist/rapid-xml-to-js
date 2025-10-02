@@ -13,10 +13,9 @@
   },
   "license": "MIT",
   "author": "Christian Pilegaard Cederquist",
-  "main": "benchmark.js",
+  "main": "XmlParser.mjs",
   "scripts": {
     "parser": "node XmlParser.mjs",
-    "builder": "node XmlBuilder.mjs",
     "test": "npm run parser"
   },
   "dependencies": {

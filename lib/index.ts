@@ -4,14 +4,14 @@ export function xmlToJs(xml: string) {
   let curName = ''
   let curContentList: [number,number][] = [];
   let hasContent = false;
-  for (let i = 0; i < xml.length; i++) {
-    let curChar = xml[i];
-    if (curChar === '<') { // Inside an opening or closing tag
-      if (xml[i+1] === '/') { // Inside a closing tag
+  const xmlLength = xml.length;
+  for (let i = 0; i < xmlLength; i++) {
+    if (xml.charCodeAt(i) === 60 /* < */) { // Inside an opening or closing tag
+      if (xml.charCodeAt(i + 1) === 47 /* / */) { // Inside a closing tag
         cur = cur.__parent;
         if (hasContent) { // Insert content instead of current object
           if (cur[curName] instanceof Array) {
-            const lastIdx = cur[curName].length-1;
+            const lastIdx = cur[curName].length - 1;
 
             cur[curName][lastIdx]['#text'] = ''
             for (let i = 0; i < curContentList.length; i++) {
@@ -26,31 +26,22 @@ export function xmlToJs(xml: string) {
             }
           }
         }
-        while(xml[i] !== '>') {
-          i++;
-        }
+        i = xml.indexOf('>', i);
         curName = '';
-      } else if (xml[i+1] === '?' || xml[i+1] === '!') { // Ignore processing instructions, stylesheets, DTD validation, 
-        if (xml[i+1] === '!') {
+      } else if ((xml.charCodeAt(i + 1) === 63 /* ? */ || xml.charCodeAt(i + 1) === 33 /* ! */)) { // Ignore processing instructions, stylesheets, DTD validation,
+        if (xml.charCodeAt(i + 1) === 33 /* ! */) {
           // Handle declarations
           // TODO: Create skipUntil utility function
           if (xml.startsWith('<!DOCTYPE', i)) { // Doctype
             i+=9;
-            while(xml[i] !== '>') {
-              i++
-            }
+            i = xml.indexOf('>', i);
           } else if (xml.startsWith('<!--', i)) { // Comment
             i+= 4;
-            while(!xml.startsWith('-->', i)) {
-              i++;
-            }
-            i+= 2;
+            i = xml.indexOf('-->', i) + 2;
           } else if (xml.startsWith('<![CDATA[', i)) { // Handle CDATA
             i+= 9;
             let contentFrom = i;
-            while(!xml.startsWith(']]>', i)) {
-              i++;
-            }
+            i = xml.indexOf(']]>', i);
             let contentTo = i;
             curContentList.push([contentFrom, contentTo]);
             i+=2;
@@ -59,39 +50,35 @@ export function xmlToJs(xml: string) {
           }
         } else {
           // Ignore processing instructions and stylesheets
-          while(xml[i] !== '>') {
-            i++;
-          }
+          i = xml.indexOf('>', i);
         }
         
       } else { // Opening
         // Handle next
         i++; // Move to first char
         let name = ''; // Create a name
-        while(xml[i] !== ' ' && xml[i] !== '>' && xml[i] !== '/') { // Go until attributes or closing. TODO: Handle XML attributes
+        while (xml.charCodeAt(i) !== 32 /* ' ' */ && xml.charCodeAt(i) !== 62 /* '>' */ && xml.charCodeAt(i) !== 47 /* '/' */) { // Go until attributes or closing. TODO: Handle XML attributes
           name += xml[i];
-          i++
+          i++;
         }
         let isSelfClosing = false;
-        let attrs: [number,number,number,number][] = []
-        while(xml[i] !== '>') { // Go until closing tag
+        let attrs: [number, number, number, number][] = []
+        while (xml.charCodeAt(i) !== 62 /* '>' */) { // Go until closing tag
           i++;
-          if (xml[i] !== ' ' && xml[i] !== '\n' && xml[i] !== '>' && xml[i] !== '/') {
+          if (xml.charCodeAt(i) !== 32 /* ' ' */ && xml.charCodeAt(i) !== 10 /* '\n' */ && xml.charCodeAt(i) !== 62 /* '>' */ && xml.charCodeAt(i) !== 47 /* '/' */) {
             const attrNameStart = i;
             let attrNameEnd = -1;
-            while(xml[i] !== '=') {
-              i++;
-            }
+            i = xml.indexOf('=', i); // find =
             attrNameEnd = i;
-            i+=2; // Skip ="
+            i += 2; // Skip ="
             let attrValueStart = i;
-            while(xml[i] !== '"' || xml[i-1] === '\\') {
-              i++
+            while (xml.charCodeAt(i) !== 34 /* '"' */ || xml.charCodeAt(i - 1) === 92 /* '\' */) {
+              i++;
             }
             attrs.push([attrNameStart, attrNameEnd, attrValueStart, i]);
           }
         }
-        if (xml[i-1] === '/') {
+        if (xml.charCodeAt(i - 1) === 47 /* '/' */) {
           isSelfClosing = true;
         }
         if (cur[name]) { // Already defined, create an array or add to existing array
@@ -124,6 +111,7 @@ export function xmlToJs(xml: string) {
           }
           cur['$attrs'] = {}
           for (let i = 0; i < attrs.length; i++) {
+            //            attr name start, attr name end,                  attr value start, attr value end
             cur['$attrs'][xml.slice(attrs[i][0], attrs[i][1])] = xml.slice(attrs[i][2], attrs[i][3]);
           }
           if (isSelfClosing) { // And hop back up
@@ -135,8 +123,8 @@ export function xmlToJs(xml: string) {
       curContentList = [];
     } else if (curName) { // Inside curName
       let contentFrom = i; // TODO: Handle mixed content
-      while(xml[i] !== '<') {
-        if(!hasContent && (xml[i] !== ' ' && xml[i] !== '\n')) {
+      while (xml.charCodeAt(i) !== 60 /* < */) {
+        if (!hasContent && (xml.charCodeAt(i) !== 32 /* ' ' */ && xml.charCodeAt(i) !== 10 /* '\n' */)) {
           hasContent = true;
         }
         i++

@@ -30,7 +30,7 @@ npm install rapid-xml-to-js
 Here’s how you can use **rapid-xml-to-jsn**:
 
 ```typescript
-import { xlmToJson } from 'rapid-xml-to-js';
+import { xlmToJs } from 'rapid-xml-to-js';
 
 const xml = `
 <root>
@@ -43,7 +43,7 @@ const xml = `
 </root>
 `;
 
-const parsed = xmlToJson(xml);
+const parsed = xmlToJs(xml);
 
 console.log(parsed);
 // Output:
@@ -63,7 +63,7 @@ rapid-xml-to-js is optimized for speed and low memory usage, skipping some XML f
 
 ## API
 
-### `xmlToJson(xml: string): object`
+### `xmlToJs(xml: string): object`
 
 Parses a well-formed XML string into a JavaScript object.
 
@@ -74,8 +74,63 @@ Parses a well-formed XML string into a JavaScript object.
 - A nested JavaScript object representing the XML structure.
 
 ## Benchmarks
+Credits to fast-xml-parser for the XML documents and benchmark code.
 
-Soon(tm)
+Navigate to benchmarks folder.
+
+Run command `npm install`
+
+Comment in the XML document path to use
+
+Run command `npm run test`
+
+### Results
+CPU: AMD Ryzen 9 9900X @ 4.4 GHz
+
+RAM: 2x32GB DDR5-6000MHz
+
+OS: Windows 11 Home 64-bit
+
+Runtime: Node.js
+
+Benchmark tool: Benchmark.js
+
+
+#### ptest.xml
+Tiny XML file with attributes, CDATA and nesting
+| Library                            | Requests/second |
+|------------------------------------|-----------------|
+| fast-xml-parser                    | 76 833          |
+| fast-xml-parser - preserve order   | 81 940          |
+| xmlbuilder2                        | 33 847          |
+| xml2js                             | 36 126          |
+| txml                               | 456 226         |
+| rapid-xml-to-js                    | 593 815         |
+
+#### sample.xml
+Small sample XML file at 1.5KB
+| Library                            | Requests/second |
+|------------------------------------|-----------------|
+| fast-xml-parser                    | 20 676          |
+| fast-xml-parser - preserve order   | 22 492          |
+| xmlbuilder2                        | 15 123          |
+| xml2js                             | 16 361          |
+| txml                               | 158 576         |
+| rapid-xml-to-js                    | 201 213         |
+
+#### large.xml
+Large 98MB XML file
+| Library                            | Requests/second |
+|------------------------------------|-----------------|
+| fast-xml-parser                    | 0.2789          |
+| fast-xml-parser - preserve order   | 0.3115          |
+| xmlbuilder2                        | 0.1648          |
+| xml2js                             | 0.2233          |
+| txml                               | 1.3508          |
+| rapid-xml-to-js                    | 1.8392          |
+
+### Missing a library?
+Create an issue or submit a PR adding the library to the benchmark-project.
 
 ## Contributing
 
