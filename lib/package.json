@@ -1,6 +1,6 @@
 {
   "name": "rapid-xml-to-js",
-  "version": "0.1.5",
+  "version": "1.0.0",
   "type": "module",
   "description": "Fast, dependency-free XML-parser for parsing XML structures into JS objects. Optimised for speed and low memory usage.",
   "main": "dist/index.cjs.js",
