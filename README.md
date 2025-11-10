@@ -12,9 +12,9 @@ This library is built for performance and simplicity. Below is a summary of what
 - Sets attributes on elements ($attrs)
 - Supports CDATA sections.
 - Skips comments, processing instructions (`<?...?>`), and `<!DOCTYPE>` declarations.
+- Handles mixed content (using newline to differentiate content sections)
 
 ### ❌ Limitations
-- Does not handle mixed content (text between and around child elements). (To be implemented)
 - Does not validate XML (assumes input is well-formed).
 
 ## Installation

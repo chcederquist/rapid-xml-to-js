@@ -1,5 +1,6 @@
 import { xmlToJs } from "./index";
-// TODO: Benchmark tests
+import { describe, expect, test, it } from '@jest/globals';
+
 describe('Test of parse', () => {
 
   test('parses a single attribute', () => {
@@ -391,7 +392,7 @@ describe('Test of parse', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('handles mixed test and CDATA', () => {
+  test('handles mixed text and CDATA', () => {
     const xml = `
       <root>
         <data>Test <![CDATA[Level 1]]>here<![CDATA[ and Level 2]]>there</data>
@@ -603,4 +604,19 @@ describe('Test of parse', () => {
     }
     expect(xmlToJs(xml)).toEqual(expected);
   })
+
+  test('parses mixed content', () => {
+    const xml = `<root>Content1<child>More Content</child>Content2</root>`;
+    const expected = {
+      root: {
+        __parent: expect.any(Object),
+        child: {
+          __parent: expect.any(Object),
+          "#text": "More Content",
+        },
+        "#text": "Content1\nContent2",
+      },
+    };
+    expect(xmlToJs(xml)).toEqual(expected);
+  });
 });
